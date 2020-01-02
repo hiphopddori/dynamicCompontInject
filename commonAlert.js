@@ -3,12 +3,17 @@
  * Admin2 custom alrt , confirm
  */
 
-(function (Vue) {
+(Vue=> {
     Vue.component('commonAlert', {
-        template: `<modal ref="commonAlert" v-show="isPop" @click="onClose" :title="title" :isTitleBar=true :bodyStyle="bodyStyle" @close="onClose">
-                        <div class="modal-content pt-20">
-                           {{msg}}
-                        </div>
+        template: `<modal ref="commonAlert" v-show="isPop" @click="onClose" :title="title" :isTitleBar=false :bodyStyle="bodyStyle" @close="onClose" >
+                        <p class="bold pt-30 pb-20 ta-c">{{title}}</p>
+                        <div class="container100 ta-c fs-13" v-html="util.replaceNewLine(msg)">
+<!--                            {{ msg }}-->
+                        </div>                    
+                        <div class="container100 pt-40 pb-30 ta-c cf">
+                            <button v-show="isConfirm" class="admin-bt wd-90 mr-05" @click="onClickCancel">취소</button>                            
+                            <button class="admin-bd-bt wd-80" @click="onClickOk">확인</button>
+                        </div>                        
                     </modal>`,
         data() {
             return {
@@ -22,32 +27,36 @@
             }
         },
         created(){
-            this.$root._dynamicContainer = this;
-            //Vue.prototype.$alertContainer = this;
+            this.$root[this.$options.name] = this;
         },
         computed: {
         },
         methods: {
             onClose(){
+
+            },
+            onClickCancel(){
                 this.isPop = false;
-                this.resolve(true)
+                //this.reject();
             },
             onClickOk(){
-                this.resolve(true)
+                this.resolve(true);
+                this.isPop = false;
             },
-            alert(isConfirm,msg,width,height){
+            alert(isConfirm,title,msg,width,height){
 
                 let bodyStyle = {};
                 if (width !== undefined){
                     bodyStyle.width = width+'px';
                 }else{
-                    bodyStyle.width = '350px';
+                    bodyStyle.width = '400px';
                 }
 
                 if (height !== undefined){
                     bodyStyle.height = height+'px';
                 }
                 this.isConfirm = isConfirm;
+                this.title = title;
                 this.bodyStyle = bodyStyle;
                 this.isPop = true;
                 this.msg = msg;
